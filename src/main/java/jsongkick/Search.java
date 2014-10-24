@@ -25,6 +25,15 @@ public abstract class Search {
 	private CloseableHttpClient httpClient;
 	private JsonObject jsonObj;
 	
+
+	/**
+	 * Builds a string representing response from songkick ready to be parse as JSON.
+	 * 
+	 * @param response					HttpRespose received by HttpGet call.	
+	 * @return StringBuffer				String representing the response. Ready to parse as JSON.
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
 	protected StringBuffer parseResponse(HttpResponse response) throws IllegalStateException, IOException{
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		
@@ -45,12 +54,21 @@ public abstract class Search {
 		httpClient = HttpClients.createDefault();
 	}
 	
+	/**
+	 * @throws IOException
+	 */
 	public void closeConnection() throws IOException{
 		log.info("Closing connection");
 
 		httpClient.close();
 	}
 	
+	/**
+	 * Performs HTTP get to songkick given a valid URI, returns JSON object representation of response.
+	 * 
+	 * @param uri
+	 * @return JsonObject
+	 */
 	public JsonObject search(URI uri){
 		HttpResponse response;
 		StringBuffer result;

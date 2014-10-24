@@ -10,7 +10,7 @@ public class App {
 		
 		sa.openConnection();
 		try {
-			sa.buildURI("figa");
+			sa.buildURI("Nirvana");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

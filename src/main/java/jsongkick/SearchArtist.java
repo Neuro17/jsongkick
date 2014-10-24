@@ -20,6 +20,12 @@ public class SearchArtist extends Search {
 		gson = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
+	/**
+	 * Builds URI given an artist name, ready to query songkick.
+	 * 
+	 * @param artistName			String representing artist name
+	 * @throws URISyntaxException	
+	 */
 	public void buildURI(String artistName) throws URISyntaxException{
 		log.info("Building URI");
 		
@@ -33,6 +39,9 @@ public class SearchArtist extends Search {
 		log.info("Succesfully build: " + uri); 
 	}
 	
+	/**
+	 * Extracts the first artist received by songkick response.
+	 */
 	public void firstArtist(){
 		log.info("Retrieving first artist");
 
