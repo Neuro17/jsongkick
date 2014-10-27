@@ -3,20 +3,20 @@ package jsongkick;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import entity.SongkickArtist;
 import search.SearchArtist;
 
 public class App {
 
 	public static void main(String[] args) throws IOException, URISyntaxException {
+		SongkickArtist artist;
 		SearchArtist sa = new SearchArtist();
 		
 		sa.openConnection();
 		
-		sa.buildURI("Nirvana");
+		artist = sa.firstArtist("Queens of the stone age");
 		
-		sa.search(sa.getUri());
-		
-		sa.firstArtist();
+		System.out.println(artist.toString());
 		
 		sa.closeConnection();
 	}

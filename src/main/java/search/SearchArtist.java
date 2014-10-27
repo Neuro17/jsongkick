@@ -1,7 +1,10 @@
 package search;
 
+import http.SongkickConnector;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -9,60 +12,56 @@ import org.apache.http.client.utils.URIBuilder;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
-public class SearchArtist extends Search {
+import config.SongkickConfig;
+import entity.SongkickArtist;
+
+public class SearchArtist extends SongkickConnector {
 	private static final Logger log = Logger.getLogger(Class.class.getName());
-	protected static final String PATH = "/search/artists.json";
-	private URI uri;
-	private URIBuilder uriBld;
 	
 	public SearchArtist(){
-		uriBld = new URIBuilder();
-		gson = new GsonBuilder().setPrettyPrinting().create();
-	}
-	
-	/**
-	 * Builds URI given an artist name, ready to query songkick.
-	 * 
-	 * @param artistName			String representing artist name
-	 * @throws URISyntaxException	
-	 */
-	public void buildURI(String artistName) throws URISyntaxException{
-		log.info("Building URI");
-		
-		uri = uriBld.setScheme(SCHEME)
-				.setHost(HOST)
-				.setPath(PATH)
-				.setParameter("query", artistName)
-				.setParameter("apikey", API_KEY)
-				.build();
-		
-		log.info("Succesfully build: " + uri); 
+		super.gson = new GsonBuilder().setPrettyPrinting().create();
+		super.uriBld = new URIBuilder();
+		log.setLevel(Level.INFO);
 	}
 	
 	/**
 	 * Extracts the first artist received by songkick response.
+	 * @throws URISyntaxException 
 	 */
-	public void firstArtist(){
+	public SongkickArtist firstArtist(String artistName) throws URISyntaxException{
+		String name;
+		String id;
+		
 		log.info("Retrieving first artist");
-
+		
+		buildURI();
+		
+		uri = query(artistName);
+		
+		search(uri);
+		
 		if(!isEmptyResponse()){
-			JsonElement firstArtist = getJsonObj().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
-
+			
+			JsonElement firstArtist = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
+			
+			name = firstArtist.getAsJsonObject().get("displayName").getAsString();
+			id = firstArtist.getAsJsonObject().get("id").getAsString();
+			log.info(name + " " + id);
 			log.info("Successfully retrieved artist");
 
-			System.out.println(gson.toJson(firstArtist));
+//			System.out.println(gson.toJson(firstArtist));
+			log.info(gson.toJson(firstArtist));
+			
+			return new SongkickArtist(name, id);
 
 		}
 		else {
 			log.warning("Artist not found");
 		}
+		return new SongkickArtist();
 	}
-
-	public URI getUri() {
-		return uri;
-	}
-
-	public void setUri(URI uri) {
-		this.uri = uri;
+	
+	private URI query(String artistName) throws URISyntaxException{
+		return uriBld.setParameter("query", artistName).setParameter("apikey", SongkickConfig.getApiKey()).build();
 	}
 }
