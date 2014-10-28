@@ -2,22 +2,29 @@ package jsongkick;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import entity.SongkickArtist;
 import search.SearchArtist;
 
 public class App {
-
-	public static void main(String[] args) throws IOException, URISyntaxException {
-		SongkickArtist artist;
+	
+	private static final Logger log = LogManager.getLogger(App.class);
+	
+	public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
+		ArrayList <SongkickArtist> artists = new ArrayList<SongkickArtist>();
 		SearchArtist sa = new SearchArtist();
 		
 		sa.openConnection();
 		
-		artist = sa.firstArtist("Queens of the stone age");
+		artists = sa.list("pearl jam");
+		log.info(sa.firstArtist("nirvana"));
 		
-		System.out.println(artist.toString());
-		
-		sa.closeConnection();
+		for(SongkickArtist artist : artists){
+			log.info(artist.toString());
+		}
 	}
 }

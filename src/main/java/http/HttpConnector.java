@@ -12,13 +12,13 @@ public interface HttpConnector {
 	
 	public void openConnection();
 
-	public void closeConnection();
+//	public void closeConnection();
 	
 	public JsonObject parseResponseAsJson(HttpResponse response) throws IllegalStateException, IOException;
 	
 	public boolean isEmptyResponse();
 	
-	public JsonObject search(URI uri);
+	public JsonObject executeRequest(URI uri);
 	
 	public void buildURI() throws URISyntaxException;
 

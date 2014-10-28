@@ -4,10 +4,11 @@ import http.SongkickConnector;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -16,12 +17,33 @@ import config.SongkickConfig;
 import entity.SongkickArtist;
 
 public class SearchArtist extends SongkickConnector {
-	private static final Logger log = Logger.getLogger(Class.class.getName());
+	private static final Logger log = LogManager.getLogger(SearchArtist.class);
 	
 	public SearchArtist(){
 		super.gson = new GsonBuilder().setPrettyPrinting().create();
 		super.uriBld = new URIBuilder();
-		log.setLevel(Level.INFO);
+	}
+	
+	public void search(String artistName) throws URISyntaxException{
+		buildURI();
+		
+		uri = query(artistName);
+		
+		executeRequest(uri);
+	}
+	
+	public boolean checkResponse(){
+		if(super.isNullResponse()){
+			log.error("Timeout scaduto");
+			return false;
+		}
+			
+		if(isEmptyResponse()){
+			log.error("Artists not found");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -31,37 +53,55 @@ public class SearchArtist extends SongkickConnector {
 	public SongkickArtist firstArtist(String artistName) throws URISyntaxException{
 		String name;
 		String id;
+		JsonElement firstArtist = null;
 		
-		log.info("Retrieving first artist");
+		log.trace("Retrieving first artist");
 		
-		buildURI();
+		search(artistName);
 		
-		uri = query(artistName);
-		
-		search(uri);
-		
-		if(!isEmptyResponse()){
-			
-			JsonElement firstArtist = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
-			
-			name = firstArtist.getAsJsonObject().get("displayName").getAsString();
-			id = firstArtist.getAsJsonObject().get("id").getAsString();
-			log.info(name + " " + id);
-			log.info("Successfully retrieved artist");
-
-//			System.out.println(gson.toJson(firstArtist));
-			log.info(gson.toJson(firstArtist));
-			
-			return new SongkickArtist(name, id);
-
+		if(!checkResponse()){
+			return new SongkickArtist();
 		}
-		else {
-			log.warning("Artist not found");
+	
+		firstArtist = super.getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
+		
+		name = firstArtist.getAsJsonObject().get("displayName").getAsString();
+		id = firstArtist.getAsJsonObject().get("id").getAsString();
+		
+		log.trace("Successfully retrieved artist");
+		
+		return new SongkickArtist(name, id);
+		
+	}
+	
+	public ArrayList<SongkickArtist> list(String artistName) throws URISyntaxException{
+		log.trace("Retrieving artists list");
+		JsonElement artistsAsJson = null;
+		ArrayList<SongkickArtist>  artists = new ArrayList<SongkickArtist>();
+		
+		search(artistName);
+		
+		if(!checkResponse()){
+			return artists;
 		}
-		return new SongkickArtist();
+			
+		artistsAsJson = super.getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist");
+		
+		for(JsonElement artist : artistsAsJson.getAsJsonArray() ){
+			log.debug(gson.toJson(artist.getAsJsonObject().get("displayName").getAsString()));
+			log.debug(gson.toJson(artist.getAsJsonObject().get("id").getAsString()));
+			artists.add(new SongkickArtist(artist.getAsJsonObject().get("displayName").getAsString(), artist.getAsJsonObject().get("id").getAsString()));
+		}
+		
+		log.trace("Successfully retrieved artists");
+		return artists;
 	}
 	
 	private URI query(String artistName) throws URISyntaxException{
 		return uriBld.setParameter("query", artistName).setParameter("apikey", SongkickConfig.getApiKey()).build();
+	}
+	
+	public boolean isEmptyResponse(){
+		return super.getJsonResponse().getAsJsonObject("resultsPage").get("totalEntries").getAsInt() == 0;
 	}
 }
