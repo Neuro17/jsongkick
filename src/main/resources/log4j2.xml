@@ -9,10 +9,10 @@
   	<Logger name="http.SongkickConnector" level="trace" additivity="false">
   		<AppenderRef ref="Console"/>
   	</Logger>
-  	<Logger name="search.SearchArtist" level="info" additivity="false">
+  	<Logger name="search.SearchArtist" level="trace" additivity="false">
   		<AppenderRef ref="Console"/>
   	</Logger>
-    <Root level="info">
+    <Root level="trace">
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>
