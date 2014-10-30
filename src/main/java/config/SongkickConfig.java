@@ -8,6 +8,10 @@ public class SongkickConfig {
 	private static final String ARTIST_PATH = "/search/artists.json";
 	
 	private static final String CONCERT_PATH = "";
+	
+	private static final String LOCATION_PATH = "/search/locations.json";
+	
+	private static final String EVENT_PATH = "/events.json";
 
 	private static String apiKey = "iF1N0jYrhI5wtG3n";
 	
@@ -17,6 +21,10 @@ public class SongkickConfig {
 
 	public void setApiKey(String apiKey) {
 		SongkickConfig.apiKey = apiKey;
+	}
+
+	public static String getLocationPath() {
+		return LOCATION_PATH;
 	}
 
 	public static String getScheme() {
@@ -33,5 +41,9 @@ public class SongkickConfig {
 
 	public static String getConcertPath() {
 		return CONCERT_PATH;
+	}
+
+	public static String getEventPath() {
+		return EVENT_PATH;
 	}
 }

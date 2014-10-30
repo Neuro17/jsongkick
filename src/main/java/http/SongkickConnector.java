@@ -2,19 +2,18 @@ package http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,12 +22,11 @@ import config.SongkickConfig;
 
 public abstract class SongkickConnector implements HttpConnector{
 	private static final Logger log = LogManager.getLogger(SongkickConnector.class);
-	protected Gson gson;
-	private HttpClient httpClient;
-//	private RequestConfig reqConfig;
 	private JsonObject jsonResponse;
+	protected Gson gson;
 	protected URIBuilder uriBld;
 	protected URI uri;
+	protected URL url;
 	
 
 	/**
@@ -39,9 +37,9 @@ public abstract class SongkickConnector implements HttpConnector{
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public JsonObject parseResponseAsJson(HttpResponse response) throws IllegalStateException, IOException{
-		log.trace("Entering praseResponseAsJson");
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+	public JsonObject parseResponseAsJson(InputStream response) throws IllegalStateException, IOException{
+		log.trace("Entering parseResponseAsJson");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(response));
 		
 		JsonParser jsonParser = new JsonParser();
 		
@@ -52,39 +50,9 @@ public abstract class SongkickConnector implements HttpConnector{
 		while ((line = rd.readLine()) != null) {
 		    result.append(line);
 		}
-		log.trace("Exiting praseResponseAsJson");
+		log.trace("Exiting parseResponseAsJson");
 		return jsonParser.parse(result.toString()).getAsJsonObject();
 	}
-	
-	public RequestConfig createConfig(){
-		int timeout = 10000;
-		RequestConfig reqConfig = RequestConfig.custom()
-			    .setSocketTimeout(timeout)
-			    .setConnectTimeout(timeout)
-			    .setConnectionRequestTimeout(timeout)
-			    .build();
-		
-		return reqConfig;
-	}
-	
-	public void openConnection(){
-		log.trace("Opening connection");
-
-		httpClient = new ApacheHttpTransport().getHttpClient();	    
-	}
-	
-	/**
-	 * @throws IOException
-	 */
-//	public void closeConnection(){
-//		log.info("Closing connection");
-//
-//		try {
-//			httpClient.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	/**
 	 * Performs HTTP get to songkick given a valid URI, returns JSON object representation of response.
@@ -93,12 +61,16 @@ public abstract class SongkickConnector implements HttpConnector{
 	 * @return JsonObject
 	 */
 	public JsonObject executeRequest(URI uri){
-		HttpResponse response;
+		InputStream response;
 		
-		HttpGet httpget = new HttpGet(uri);
+		try {
+			url = uri.toURL();
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
 				
 		try {
-			response = httpClient.execute(httpget);
+			response = url.openStream();
 			
 			log.debug(response.toString());
 			log.debug(uri.toString());
@@ -111,6 +83,7 @@ public abstract class SongkickConnector implements HttpConnector{
 			e.printStackTrace();
 			
 		} catch (IOException e) {
+			log.error(e.getMessage());
 			jsonResponse =  null;
 		}
 		
@@ -121,18 +94,36 @@ public abstract class SongkickConnector implements HttpConnector{
 	public boolean isNullResponse(){
 		return jsonResponse == null;
 	}
+	
+	public boolean isEmptyResponse(){
+		return jsonResponse.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() == 0;
+	}
 
 	public JsonObject getJsonResponse() {
 		return jsonResponse;
 	}
 	
+	public boolean checkResponse(){
+		if(isNullResponse()){
+			log.error("Timeout scaduto");
+			return false;
+		}
+			
+		if(isEmptyResponse()){
+			log.error("Resource not found");
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public void buildURI(){
 		log.trace("Building URI");
 		
-		uriBld.setScheme(SongkickConfig.getScheme())
-				.setHost(SongkickConfig.getHost())
-				.setPath(SongkickConfig.getArtistPath());				
+		uriBld.setScheme(SongkickConfig.getScheme()).setHost(SongkickConfig.getHost());		
 		
 		log.trace("Succesfully build:"); 
 	}
+	
+	public abstract URI query(String param) throws URISyntaxException;
 }

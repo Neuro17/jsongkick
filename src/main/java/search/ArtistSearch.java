@@ -16,12 +16,12 @@ import com.google.gson.JsonElement;
 import config.SongkickConfig;
 import entity.SongkickArtist;
 
-public class SearchArtist extends SongkickConnector {
-	private static final Logger log = LogManager.getLogger(SearchArtist.class);
+public class ArtistSearch extends SongkickConnector {
+	private static final Logger log = LogManager.getLogger(ArtistSearch.class);
 	
-	public SearchArtist(){
-		super.gson = new GsonBuilder().setPrettyPrinting().create();
-		super.uriBld = new URIBuilder();
+	public ArtistSearch(){
+		gson = new GsonBuilder().setPrettyPrinting().create();
+		uriBld = new URIBuilder();
 	}
 	
 	public void search(String artistName) throws URISyntaxException{
@@ -31,21 +31,7 @@ public class SearchArtist extends SongkickConnector {
 		
 		executeRequest(uri);
 	}
-	
-	public boolean checkResponse(){
-		if(super.isNullResponse()){
-			log.error("Timeout scaduto");
-			return false;
-		}
-			
-		if(isEmptyResponse()){
-			log.error("Artists not found");
-			return false;
-		}
 		
-		return true;
-	}
-	
 	/**
 	 * Extracts the first artist received by songkick response.
 	 * @throws URISyntaxException 
@@ -63,7 +49,7 @@ public class SearchArtist extends SongkickConnector {
 			return new SongkickArtist();
 		}
 	
-		firstArtist = super.getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
+		firstArtist = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
 		
 		name = firstArtist.getAsJsonObject().get("displayName").getAsString();
 		id = firstArtist.getAsJsonObject().get("id").getAsString();
@@ -85,7 +71,7 @@ public class SearchArtist extends SongkickConnector {
 			return artists;
 		}
 			
-		artistsAsJson = super.getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist");
+		artistsAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist");
 		
 		for(JsonElement artist : artistsAsJson.getAsJsonArray() ){
 			log.debug(gson.toJson(artist.getAsJsonObject().get("displayName").getAsString()));
@@ -97,11 +83,10 @@ public class SearchArtist extends SongkickConnector {
 		return artists;
 	}
 	
-	private URI query(String artistName) throws URISyntaxException{
-		return uriBld.setParameter("query", artistName).setParameter("apikey", SongkickConfig.getApiKey()).build();
+	@Override
+	public URI query(String artistName) throws URISyntaxException{
+		return uriBld.setPath(SongkickConfig.getArtistPath()).setParameter("query", artistName).setParameter("apikey", SongkickConfig.getApiKey()).build();
 	}
 	
-	public boolean isEmptyResponse(){
-		return super.getJsonResponse().getAsJsonObject("resultsPage").get("totalEntries").getAsInt() == 0;
-	}
+	
 }

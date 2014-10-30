@@ -1,11 +1,11 @@
 package jsongkick;
 
-import search.SearchArtist;
+import search.ArtistSearch;
 
 public class Songkick {
-	SearchArtist searchArtist;
+	ArtistSearch searchArtist;
 	
 	public Songkick(){
-		searchArtist = new SearchArtist();
+		searchArtist = new ArtistSearch();
 	}
 }
