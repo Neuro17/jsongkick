@@ -38,6 +38,8 @@ public class Helper {
 		
 		localDate = new LocalDate(concertTmp.getAsJsonObject("start").get("date").getAsString());
 		
+		//TODO - verificare perchè a volte viene creata una data corrente invece che la data del concerto reale
+		
 		event.setDateTime(new DateTime(datetime));
 		event.setDate(localDate);		
 		event.setLocation(extractLocation(concertTmp.get("location")));

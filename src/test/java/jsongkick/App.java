@@ -39,7 +39,7 @@ public class App {
 		
 		for(Concert event : events){
 //			if(event.getPopularity() > 0.3)
-//				log.debug(event.toString());
+				log.debug(event.toString());
 		}
 		
 		log.debug(events.size());
