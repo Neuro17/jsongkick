@@ -6,9 +6,12 @@ public class Location {
 	private String city;
 	
 	public Location(double latitude, double longitude, String city) {
-		super();
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.city = city;
+	}
+
+	public Location(String city) {
 		this.city = city;
 	}
 
@@ -34,6 +37,12 @@ public class Location {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	@Override
+	public String toString() {
+		return "Location [latitude=" + latitude + ", longitude=" + longitude
+				+ ", city=" + city + "]";
 	}
 	
 }

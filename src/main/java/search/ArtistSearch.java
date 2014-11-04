@@ -1,6 +1,7 @@
 package search;
 
-import http.SongkickConnector;
+import http.SongkickConnector
+;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,14 +15,17 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import config.SongkickConfig;
-import entity.SongkickArtist;
+import entity.Artist;
 
 public class ArtistSearch extends SongkickConnector {
 	private static final Logger log = LogManager.getLogger(ArtistSearch.class);
 	
+	private Artist artist;
+	
 	public ArtistSearch(){
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		uriBld = new URIBuilder();
+		artist = new Artist();
 	}
 	
 	public void search(String artistName) throws URISyntaxException{
@@ -36,7 +40,7 @@ public class ArtistSearch extends SongkickConnector {
 	 * Extracts the first artist received by songkick response.
 	 * @throws URISyntaxException 
 	 */
-	public SongkickArtist firstArtist(String artistName) throws URISyntaxException{
+	public Artist firstArtist(String artistName) throws URISyntaxException{
 		String name;
 		String id;
 		JsonElement firstArtist = null;
@@ -46,7 +50,7 @@ public class ArtistSearch extends SongkickConnector {
 		search(artistName);
 		
 		if(!checkResponse()){
-			return new SongkickArtist();
+			artist = null;
 		}
 	
 		firstArtist = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist").get(0);
@@ -56,14 +60,14 @@ public class ArtistSearch extends SongkickConnector {
 		
 		log.trace("Successfully retrieved artist");
 		
-		return new SongkickArtist(name, id);
+		return artist = new Artist(name, id);
 		
 	}
 	
-	public ArrayList<SongkickArtist> list(String artistName) throws URISyntaxException{
+	public ArrayList<Artist> list(String artistName) throws URISyntaxException{
 		log.trace("Retrieving artists list");
 		JsonElement artistsAsJson = null;
-		ArrayList<SongkickArtist>  artists = new ArrayList<SongkickArtist>();
+		ArrayList<Artist>  artists = new ArrayList<Artist>();
 		
 		search(artistName);
 		
@@ -76,7 +80,7 @@ public class ArtistSearch extends SongkickConnector {
 		for(JsonElement artist : artistsAsJson.getAsJsonArray() ){
 			log.debug(gson.toJson(artist.getAsJsonObject().get("displayName").getAsString()));
 			log.debug(gson.toJson(artist.getAsJsonObject().get("id").getAsString()));
-			artists.add(new SongkickArtist(artist.getAsJsonObject().get("displayName").getAsString(), artist.getAsJsonObject().get("id").getAsString()));
+			artists.add(new Artist(artist.getAsJsonObject().get("displayName").getAsString(), artist.getAsJsonObject().get("id").getAsString()));
 		}
 		
 		log.trace("Successfully retrieved artists");
@@ -87,6 +91,5 @@ public class ArtistSearch extends SongkickConnector {
 	public URI query(String artistName) throws URISyntaxException{
 		return uriBld.setPath(SongkickConfig.getArtistPath()).setParameter("query", artistName).setParameter("apikey", SongkickConfig.getApiKey()).build();
 	}
-	
 	
 }

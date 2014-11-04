@@ -1,6 +1,7 @@
 package config;
 
 public class SongkickConfig {
+	
 	private static final String SCHEME = "http";
 	
 	private static final String HOST = "api.songkick.com/api/3.0";
@@ -46,4 +47,5 @@ public class SongkickConfig {
 	public static String getEventPath() {
 		return EVENT_PATH;
 	}
+	
 }

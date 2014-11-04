@@ -1,16 +1,16 @@
 package entity;
 
-public class SongkickArtist {
+public class Artist {
 	private String name;
 	private String id;
 	
 	private boolean empty;
 	
-	public SongkickArtist(){
+	public Artist(){
 		this.empty = true;
 	}
 	
-	public SongkickArtist(String name, String id){
+	public Artist(String name, String id){
 		this.name = name;
 		this.id = id;
 		this.empty = false;

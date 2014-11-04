@@ -3,59 +3,94 @@ package entity;
 import java.util.ArrayList;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 public class Concert {
 	private DateTime dateTime; 
-	private ArrayList<SongkickArtist> performance;
+	private LocalDate date;
+	private ArrayList<Artist> performance;
 	private Venue venue;
 	private String id;
-	private int popularity;
+	private double popularity;
 	private Location location;
-	
-	public Concert(DateTime dateTime, ArrayList<SongkickArtist> performance,
-			Venue venue, String id, int popularity, Location location) {
-		super();
+		
+	public Concert(DateTime dateTime, LocalDate date, ArrayList<Artist> performance, Venue venue, String id, double popularity, Location location) {
 		this.dateTime = dateTime;
+		this.date = date;
 		this.performance = performance;
 		this.venue = venue;
 		this.id = id;
 		this.popularity = popularity;
 		this.location = location;
 	}
+
+	public Concert() {
+
+	}
+
 	public DateTime getDateTime() {
 		return dateTime;
 	}
+	
 	public void setDateTime(DateTime dateTime) {
 		this.dateTime = dateTime;
 	}
-	public ArrayList<SongkickArtist> getPerformance() {
+	
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public ArrayList<Artist> getPerformance() {
 		return performance;
 	}
-	public void setPerformance(ArrayList<SongkickArtist> performance) {
+	
+	public void setPerformance(ArrayList<Artist> performance) {
 		this.performance = performance;
 	}
+	
 	public Venue getVenue() {
 		return venue;
 	}
+	
 	public void setVenue(Venue venue) {
 		this.venue = venue;
 	}
+	
 	public String getId() {
 		return id;
 	}
+	
 	public void setId(String id) {
 		this.id = id;
 	}
-	public int getPopularity() {
+	
+	public double getPopularity() {
 		return popularity;
 	}
-	public void setPopularity(int popularity) {
+	
+	public void setPopularity(double popularity) {
 		this.popularity = popularity;
 	}
+	
 	public Location getLocation() {
 		return location;
 	}
+	
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+
+	@Override
+	public String toString() {
+		return "Concert [dateTime=" + dateTime + ", date=" + date
+				+ ", performance=" + performance + ", venue=" + venue + ", id="
+				+ id + ", popularity=" + popularity + ", location=" + location
+				+ "]";
+	}
+
 }
+		

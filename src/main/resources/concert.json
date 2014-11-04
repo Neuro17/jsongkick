@@ -1,0 +1,51 @@
+{
+  "type": "Concert",
+  "popularity": 0.006339,
+  "displayName": "Claudio Baglioni at Palasport - Palafabris (November 1, 2014)",
+  "status": "ok",
+  "start": {
+    "time": "21:00:00",
+    "datetime": "2014-11-01T21:00:00+0100",
+    "date": "2014-11-01"
+  },	
+  "location": {
+    "city": "Padua, Italy",
+    "lat": 45.4157986,
+    "lng": 11.9205347
+  },
+  "performance": [
+    {
+      "billingIndex": 1,
+      "displayName": "Claudio Baglioni",
+      "artist": {
+        "identifier": [
+          {
+            "mbid": "963ea9d9-743a-409d-a997-0559f8761e67",
+            "href": "http://api.songkick.com/api/3.0/artists/mbid:963ea9d9-743a-409d-a997-0559f8761e67.json"
+          }
+        ],
+        "displayName": "Claudio Baglioni",
+        "uri": "http://www.songkick.com/artists/395235-claudio-baglioni?utm_source\u003d30373\u0026utm_medium\u003dpartner",
+        "id": 395235
+      },
+      "id": 42489228,
+      "billing": "headline"
+    }
+  ],
+  "venue": {
+    "displayName": "Palasport - Palafabris",
+    "metroArea": {
+      "displayName": "Padua",
+      "uri": "http://www.songkick.com/metro_areas/57241-italy-padua?utm_source\u003d30373\u0026utm_medium\u003dpartner",
+      "id": 57241,
+      "country": {
+        "displayName": "Italy"
+      }
+    },
+    "lat": 45.4157986,
+    "lng": 11.9205347,
+    "uri": "http://www.songkick.com/venues/1443038-palasport-palafabris?utm_source\u003d30373\u0026utm_medium\u003dpartner",
+    "id": 1443038
+  },
+  "uri": "http://www.songkick.com/concerts/21332208-claudio-baglioni-at-palasport-palafabris?utm_source\u003d30373\u0026utm_medium\u003dpartner",
+  "id": 21332208
