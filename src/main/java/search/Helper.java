@@ -80,8 +80,27 @@ public class Helper {
 	}
 
 	public static Venue extractVenue(JsonElement item){
-		//TODO
-		return null;
+		//DONE?
+		Double lat;
+		Double lng;
+		Venue venue;
+		JsonObject vne = item.getAsJsonObject();
+		
+		lat = vne.get("lat").isJsonNull() ? null : vne.get("lat").getAsDouble();
+		lng = vne.get("lng").isJsonNull() ? null : vne.get("lng").getAsDouble();
+		
+		if(lat == null && lng == null)
+			venue = new Venue(	extractMetroArea(vne.get("metroArea")),
+								vne.get("displayName").getAsString(), 
+								vne.get("metroArea").getAsString());
+		else 
+			venue = new Venue(	lng, 
+								lng, 
+								extractMetroArea(vne.get("metroArea")),
+								vne.get("displayName").getAsString(),
+								vne.get("metroArea").getAsString());
+		
+		return venue;
 	}
 	
 	public static MetroArea extractMetroArea(JsonElement item){
@@ -96,8 +115,13 @@ public class Helper {
 	}
 	
 	public static Artist extractArtist(JsonElement item){
-		//TODO
-		return null;
+		//DONE?
+		Artist artist;
+		JsonObject artistTmp = item.getAsJsonObject();
+		
+		artist = new Artist(artistTmp.get("displayName").getAsString(),artistTmp.get("id").getAsString());
+		
+		return artist;
 	}
 	
 }
