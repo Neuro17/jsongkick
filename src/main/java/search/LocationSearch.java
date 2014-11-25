@@ -5,6 +5,7 @@ import http.SongkickConnector;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.GsonBuilder;
 
 import config.SongkickConfig;
+import entity.Location;
 
 public class LocationSearch extends SongkickConnector {
 	private static final Logger log = LogManager.getLogger(LocationSearch.class);
@@ -30,7 +32,8 @@ public class LocationSearch extends SongkickConnector {
 		executeRequest(uri);
 	}
 	
-	public String findId(String locationName) throws URISyntaxException{
+	public String firstLocation(String locationName) throws URISyntaxException{
+		//TODO - Cambiare il valore di ritorno in Location
 		log.trace("Retrieving location id");
 		String id;
 		
@@ -42,6 +45,11 @@ public class LocationSearch extends SongkickConnector {
 		
 		log.trace("Successfully retrieved location id");
 		return id;
+	}
+	
+	public ArrayList<Location> list(String locationName){
+		//TODO - Cambiare il valore di ritorno in Location 
+		return null;
 	}
 	
 	@Override

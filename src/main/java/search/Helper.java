@@ -50,11 +50,11 @@ public class Helper {
 		
 //		log.debug(concertTmp.getAsJsonObject("venue").get("lat"));
 		if(!concertTmp.getAsJsonObject("venue").get("id").isJsonNull()){
-			venueTmp = new Venue(metroAreaTmp,
-				concertTmp.getAsJsonObject("venue").get("id").getAsString(),
-				concertTmp.getAsJsonObject("venue").get("displayName").getAsString());
+//			venueTmp = new Venue(metroAreaTmp,
+//				concertTmp.getAsJsonObject("venue").get("id").getAsString(),
+//				concertTmp.getAsJsonObject("venue").get("displayName").getAsString());
 			
-			event.setVenue(venueTmp);
+			event.setVenue(extractVenue(concertTmp.getAsJsonObject("venue")));
 		}
 		
 //		log.debug(event.toString());
@@ -80,7 +80,7 @@ public class Helper {
 	}
 
 	public static Venue extractVenue(JsonElement item){
-		//DONE?
+		//TODO - aggiungere id
 		Double lat;
 		Double lng;
 		Venue venue;
@@ -94,7 +94,7 @@ public class Helper {
 								vne.get("displayName").getAsString(), 
 								vne.get("metroArea").getAsString());
 		else 
-			venue = new Venue(	lng, 
+			venue = new Venue(	lat, 
 								lng, 
 								extractMetroArea(vne.get("metroArea")),
 								vne.get("displayName").getAsString(),

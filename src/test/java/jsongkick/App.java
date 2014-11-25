@@ -33,16 +33,16 @@ public class App {
 		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
-		String id = locationSearch.findId("london");
+		String id = locationSearch.firstLocation("london");
 		
-		ArrayList<Concert> events = eventSearch.eventsListById(id);
+		ArrayList<Concert> events = eventSearch.eventsListByLocationId(id);
 		
-		for(Concert event : events){
-//			if(event.getPopularity() > 0.3)
-				log.debug(event.toString());
-		}
+//		for(Concert event : events){
+////			if(event.getPopularity() > 0.3)
+//				log.debug(event.toString());
+//		}
 		
-		log.debug(events.size());
+		log.debug(events.get(0));
 	}
 	
 	public static void main(String[] args){
