@@ -12,9 +12,9 @@ public class Concert {
 	private Venue venue;
 	private String id;
 	private double popularity;
-	private Location location;
+	private SimpleLocation location;
 		
-	public Concert(DateTime dateTime, LocalDate date, ArrayList<Artist> performance, Venue venue, String id, double popularity, Location location) {
+	public Concert(DateTime dateTime, LocalDate date, ArrayList<Artist> performance, Venue venue, String id, double popularity, SimpleLocation location) {
 		this.dateTime = dateTime;
 		this.date = date;
 		this.performance = performance;
@@ -76,11 +76,11 @@ public class Concert {
 		this.popularity = popularity;
 	}
 	
-	public Location getLocation() {
+	public SimpleLocation getLocation() {
 		return location;
 	}
 	
-	public void setLocation(Location location) {
+	public void setLocation(SimpleLocation location) {
 		this.location = location;
 	}
 

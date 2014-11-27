@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.GsonBuilder;
 
 import config.SongkickConfig;
-import entity.Location;
+import entity.FullLocation;
 
 public class LocationSearch extends SongkickConnector {
 	private static final Logger log = LogManager.getLogger(LocationSearch.class);
@@ -47,7 +47,7 @@ public class LocationSearch extends SongkickConnector {
 		return id;
 	}
 	
-	public ArrayList<Location> list(String locationName){
+	public ArrayList<FullLocation> list(String locationName){
 		//TODO - Cambiare il valore di ritorno in Location 
 		return null;
 	}

@@ -5,7 +5,7 @@
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
 		</Console>
 		
-		<File name="File" fileName="error.log">
+		<File name="File" fileName="concert.log">
 			<PatternLayout pattern="[%d{ISO8601} %-5level] %logger{36} - %msg%n"/>
 		</File>
 	</Appenders>
@@ -21,9 +21,13 @@
 	 		<AppenderRef ref="File"/>
 	 	</Logger>
 	 	
+	 	<Logger name="jsongkick.Helper" level="error" additivity="false">
+	 		<AppenderRef ref="Console"/>
+	 	</Logger>
+	 	
 	   <Root level="trace">
 	     <AppenderRef ref="Console"/>
-	     <AppenderRef ref="File" level="error" />
+	     <AppenderRef ref="File" level="trace" />
 	   </Root>\
 	</Loggers>
 </Configuration>

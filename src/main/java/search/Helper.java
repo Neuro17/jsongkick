@@ -5,19 +5,23 @@ import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import entity.Artist;
 import entity.Concert;
-import entity.Location;
+import entity.FullLocation;
+import entity.SimpleLocation;
 import entity.MetroArea;
 import entity.Venue;
 
 public class Helper {
 	
 	private static final Logger log = LogManager.getLogger(Helper.class);
-
+	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	
 	public static Concert extractConcert(JsonElement item){
 		Concert event = new Concert();
 		JsonObject concertTmp = item.getAsJsonObject();
@@ -26,7 +30,7 @@ public class Helper {
 		MetroArea metroAreaTmp;
 		LocalDate localDate;
 		
-//		log.debug(concertTmp.toString());
+//		log.debug(gson.toJson(concertTmp));
 		event.setPopularity(concertTmp.get("popularity").getAsDouble());
 		event.setId(concertTmp.get("id").getAsString());
 		
@@ -50,11 +54,12 @@ public class Helper {
 		
 //		log.debug(concertTmp.getAsJsonObject("venue").get("lat"));
 		if(!concertTmp.getAsJsonObject("venue").get("id").isJsonNull()){
-//			venueTmp = new Venue(metroAreaTmp,
-//				concertTmp.getAsJsonObject("venue").get("id").getAsString(),
-//				concertTmp.getAsJsonObject("venue").get("displayName").getAsString());
+			venueTmp = new Venue(metroAreaTmp,
+				concertTmp.getAsJsonObject("venue").get("id").getAsString(),
+				concertTmp.getAsJsonObject("venue").get("displayName").getAsString());
 			
-			event.setVenue(extractVenue(concertTmp.getAsJsonObject("venue")));
+//			event.setVenue(extractVenue(concertTmp.getAsJsonObject("venue")));
+			event.setVenue(venueTmp);
 		}
 		
 //		log.debug(event.toString());
@@ -62,19 +67,20 @@ public class Helper {
 		return event;
 	}
 	
-	public static Location extractLocation(JsonElement item){
+	public static SimpleLocation extractLocation(JsonElement item){
+		//TODO - location ha attributi diversi a seconda dei casi
 		Double lat, lng;
-		Location location;
+		SimpleLocation location;
 		JsonObject locTmp = item.getAsJsonObject();
 		
 		lat = locTmp.get("lat").isJsonNull() ? null : locTmp.get("lat").getAsDouble();
 		lng = locTmp.get("lng").isJsonNull() ? null : locTmp.get("lng").getAsDouble();
 		
 		if(lat == null && lng == null){
-			location = new Location(locTmp.get("city").getAsString());
+			location = new SimpleLocation(locTmp.get("city").getAsString());
 		}
 		else {
-			location = new Location(lat, lng, locTmp.get("city").getAsString());
+			location = new SimpleLocation(lat, lng, locTmp.get("city").getAsString());
 		}
 		return location;
 	}

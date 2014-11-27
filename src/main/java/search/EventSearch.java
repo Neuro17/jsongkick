@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 import config.SongkickConfig;
 import entity.Artist;
 import entity.Concert;
-import entity.Location;
+import entity.FullLocation;
 import entity.MetroArea;
 import entity.Venue;
 import http.SongkickConnector;
@@ -28,10 +28,10 @@ public class EventSearch extends SongkickConnector {
 	private static final Logger log = LogManager.getLogger(EventSearch.class);
 	
 	private JsonObject events;
-	private Location location;
+//	private Location location;
 	private MetroArea metroarea;
 	private Venue venue;
-	private Concert concert;
+	private Concert concert; 
 	private ArrayList<Concert> concerts;
 	private ArrayList<Artist> artists;
 	private Gson gson;
@@ -95,7 +95,7 @@ public class EventSearch extends SongkickConnector {
 			concerts.add(Helper.extractConcert(item));
 		}
 	
-		log.debug(listTmp.get(0).toString());
+//		log.debug(listTmp.get(0).toString());
 //		concerts = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
 		
 		log.trace("exiting eventList");

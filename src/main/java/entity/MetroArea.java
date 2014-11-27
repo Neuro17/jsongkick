@@ -10,15 +10,11 @@ public class MetroArea {
 		this.id = id;
 	}
 	
-	
-	
 	public MetroArea(String country, String id, String displayName) {
 		this.country = country;
 		this.id = id;
 		this.displayName = displayName;
 	}
-
-
 
 	public String getCountry() {
 		return country;
