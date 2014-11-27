@@ -22,9 +22,19 @@ public class App {
 	private static final Logger log = LogManager.getLogger(App.class);
 
 	public static void run() throws URISyntaxException{
+/*
+ //test queryByArtistId
+		EventSearch eventSearch = new EventSearch();
+		ArtistSearch artistSearch = new ArtistSearch();
+
+		System.out.println(artistSearch.query("123456789"));
+		System.out.println(eventSearch.queryByArtistId("123456789"));
+*/		
+		
 		ArtistSearch artistSearch = new ArtistSearch();
 		LocationSearch locationSearch = new LocationSearch();
 		EventSearch eventSearch = new EventSearch();
+
 		
 		Artist art = artistSearch.firstArtist("Metallica");
 		log.debug(art.toString());
@@ -32,8 +42,8 @@ public class App {
 		ArrayList <Artist> artists = new ArrayList<Artist>();
 		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		
-		String id = locationSearch.firstLocation("new york");
+//id non valido
+		String id = locationSearch.firstLocation("new york").getCity();
 		
 		ArrayList<Concert> events = eventSearch.eventsListByLocationId(id);
 		

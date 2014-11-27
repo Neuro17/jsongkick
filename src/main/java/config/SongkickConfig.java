@@ -8,6 +8,10 @@ public class SongkickConfig {
 	
 	private static final String ARTIST_PATH = "/search/artists.json";
 	
+	private static final String ARTIST_PATH_FOR_EVENT = "/artists";
+	
+	private static final String ARTIST_PATH_FOR_EVENT_CALENDAR = "/calendar.json";
+	
 	private static final String CONCERT_PATH = "";
 	
 	private static final String LOCATION_PATH = "/search/locations.json";
@@ -46,6 +50,14 @@ public class SongkickConfig {
 
 	public static String getEventPath() {
 		return EVENT_PATH;
+	}
+
+	public static String getArtistPathForEvent() {
+		return ARTIST_PATH_FOR_EVENT;
+	}
+
+	public static String getArtistPathForEventCalendar() {
+		return ARTIST_PATH_FOR_EVENT_CALENDAR;
 	}
 	
 }

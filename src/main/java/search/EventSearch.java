@@ -55,7 +55,10 @@ public class EventSearch extends SongkickConnector {
 	public URI query(String locationId) throws URISyntaxException {
 		log.trace("setting parameters to query");
 		
-		return uriBld.setPath(SongkickConfig.getEventPath()).setCustomQuery("location=sk:"+locationId+"&apikey="+SongkickConfig.getApiKey()).build();	
+		return uriBld	.setPath(SongkickConfig.getEventPath())
+						.setCustomQuery("location=sk:"+locationId+
+										"&apikey="+SongkickConfig.getApiKey())
+						.build();	
 	}
 	
 	public URI query(String locationId, int pageNumber){
@@ -71,9 +74,9 @@ public class EventSearch extends SongkickConnector {
 	}
 	
 	public ArrayList<Concert> eventsListByLocationId(String locationId) throws URISyntaxException{
-		//TODO - aggiungere l'array di performance.
+		//TODO (CONTROLLARE)- aggiungere l'array di performance; ho modificato extractConcert
 		
-		log.trace("entering eventList");
+		log.trace("entering eventList by location id");
 		
 		buildURI();
 		
@@ -87,24 +90,66 @@ public class EventSearch extends SongkickConnector {
 		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt()){
 			//capire se conviene gestire qui il fatto che ci possono essere più pagine nei risultati. è un problema comune a tutte le richieste
 		}
-//		log.debug(gson.toJson(events.toString()));
+//		log.debug(gson.toJson(events.toString()));: 
 		JsonArray listTmp = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
 		
-		
 		for(JsonElement item : listTmp){
-			concerts.add(Helper.extractConcert(item));
+			concerts.add(Extractor.extractConcert(item));	
 		}
 	
 //		log.debug(listTmp.get(0).toString());
 //		concerts = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
 		
-		log.trace("exiting eventList");
+		log.trace("exiting eventsListByLocationId");
 		return concerts;
 	}
 	
-	public ArrayList<Concert> eventsListByArtistId(String artistId){
-		//TODO
+	public URI queryByArtistId(String artistId) throws URISyntaxException{		
+		try {
+			
+			return uriBld	.setPath(SongkickConfig.getArtistPathForEvent())
+							.setCustomQuery(SongkickConfig.getArtistPathForEvent() + 
+											"/" + artistId +
+											"" +SongkickConfig.getArtistPathForEventCalendar()+
+											"?apikey=" + SongkickConfig.getApiKey())
+							.build();
+
+		} catch (URISyntaxException e) {
+			log.error(e.getMessage());
+		}
 		return null;
+		//TODO 	invece di stampare /artists/{artist_id}/calendar.json?apikey={your_api_key}
+		//		stampa /artists?/artists/123456789/calendar.json?apikey=iF1N0jYrhI5wtG3n
+		
+		//		in alternativa possiamo usare Uri myUri = Uri.parse("http://www.google.com");
+	}
+	
+	public ArrayList<Concert> eventsListByArtistId(String artistId) throws URISyntaxException{
+		//TODO (CONTROLLARE)
+		log.trace("entering eventLyst by artist id");
+		
+		buildURI();
+		
+		uri = queryByArtistId(artistId);
+		
+		log.debug("uri built: " + uri);
+		
+		executeRequest(uri);
+
+		events = getJsonResponse();
+		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt()){
+			//capire se conviene gestire qui il fatto che ci possono essere più pagine nei risultati. è un problema comune a tutte le richieste
+		}
+		
+		JsonArray listTmp = events.getAsJsonObject("resultPage").getAsJsonObject("result").getAsJsonArray("event");
+		
+		for(JsonElement item : listTmp){
+			concerts.add(Extractor.extractConcert(item));
+		}
+		
+		log.trace("exiting eventsListByArtistId");
+
+		return concerts;
 	}
 	
 	public JsonObject toJson(){

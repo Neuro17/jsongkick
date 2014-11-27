@@ -1,5 +1,7 @@
 package search;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -7,6 +9,7 @@ import org.joda.time.LocalDate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -17,9 +20,9 @@ import entity.SimpleLocation;
 import entity.MetroArea;
 import entity.Venue;
 
-public class Helper {
+public class Extractor {
 	
-	private static final Logger log = LogManager.getLogger(Helper.class);
+	private static final Logger log = LogManager.getLogger(Extractor.class);
 	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
 	public static Concert extractConcert(JsonElement item){
@@ -29,6 +32,8 @@ public class Helper {
 		DateTime datetime;
 		MetroArea metroAreaTmp;
 		LocalDate localDate;
+		JsonArray artistListTmp;
+		ArrayList<Artist> artistList = new ArrayList<Artist>();
 		
 //		log.debug(gson.toJson(concertTmp));
 		event.setPopularity(concertTmp.get("popularity").getAsDouble());
@@ -47,6 +52,14 @@ public class Helper {
 		event.setDateTime(new DateTime(datetime));
 		event.setDate(localDate);		
 		event.setLocation(extractLocation(concertTmp.get("location")));
+		
+		// memorizzo le performance su un JsonArray ed estraggo l'artista dal singolo JsonElement
+		artistListTmp = concertTmp.getAsJsonArray("performance");
+		for(JsonElement artistTmp : artistListTmp){
+			artistList.add(extractArtist(artistTmp));
+		}
+		event.setPerformance(artistList);
+		
 		
 		metroAreaTmp = extractMetroArea(concertTmp.getAsJsonObject("venue").getAsJsonObject("metroArea"));
 		
@@ -86,7 +99,6 @@ public class Helper {
 	}
 
 	public static Venue extractVenue(JsonElement item){
-		//TODO - aggiungere id
 		Double lat;
 		Double lng;
 		Venue venue;
@@ -97,14 +109,14 @@ public class Helper {
 		
 		if(lat == null && lng == null)
 			venue = new Venue(	extractMetroArea(vne.get("metroArea")),
-								vne.get("displayName").getAsString(), 
-								vne.get("metroArea").getAsString());
+								vne.get("id").getAsString(), 
+								vne.get("displayName").getAsString());
 		else 
 			venue = new Venue(	lat, 
 								lng, 
 								extractMetroArea(vne.get("metroArea")),
-								vne.get("displayName").getAsString(),
-								vne.get("metroArea").getAsString());
+								vne.get("id").getAsString(),
+								vne.get("displayName").getAsString());
 		
 		return venue;
 	}
