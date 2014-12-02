@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 
 import entity.Artist;
 import entity.Concert;
+import entity.FullLocation;
 
 
 public class App {
@@ -22,30 +23,26 @@ public class App {
 	private static final Logger log = LogManager.getLogger(App.class);
 
 	public static void run() throws URISyntaxException{
-/*
- //test queryByArtistId
-		EventSearch eventSearch = new EventSearch();
-		ArtistSearch artistSearch = new ArtistSearch();
+//		funzia
+//		LocationSearch ls = new LocationSearch();
+//		FullLocation fl = ls.firstLocation("rome");
+//		log.trace("location found : " + fl.getMetroarea() + " - " + fl.getCity());		
 
-		System.out.println(artistSearch.query("123456789"));
-		System.out.println(eventSearch.queryByArtistId("123456789"));
-*/		
-		
 		ArtistSearch artistSearch = new ArtistSearch();
 		LocationSearch locationSearch = new LocationSearch();
 		EventSearch eventSearch = new EventSearch();
 
 		
-		Artist art = artistSearch.firstArtist("Metallica");
-		log.debug(art.toString());
+//		Artist art = artistSearch.firstArtist("Metallica");
+//		log.debug(art.toString());
+//		
+//		ArrayList <Artist> artists = new ArrayList<Artist>();
+//		
+//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+		FullLocation fullLocation = locationSearch.firstLocation("new york");
 		
-		ArrayList <Artist> artists = new ArrayList<Artist>();
-		
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//id non valido
-		String id = locationSearch.firstLocation("new york").getCity();
-		
-		ArrayList<Concert> events = eventSearch.eventsListByLocationId(id);
+		ArrayList<Concert> events = eventSearch.eventsListByLocationId(fullLocation.getMetroarea().getId());
 		
 		for(Concert event : events){
 //			if(event.getPopularity() > 0.3)

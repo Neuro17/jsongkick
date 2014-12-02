@@ -14,6 +14,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import entity.Artist;
+import entity.City;
 import entity.Concert;
 import entity.FullLocation;
 import entity.SimpleLocation;
@@ -130,6 +131,16 @@ public class Extractor {
 				metroAreaTmp.get("displayName").getAsString());
 		
 		return metroArea;
+	}
+	
+	public static City extractCity(JsonElement item){
+		City city;
+		JsonObject cityTmp = item.getAsJsonObject();
+
+		return city = new City(	cityTmp.get("displayName").getAsString(),
+								cityTmp.getAsJsonObject("country").get("displayName").getAsString(),
+								cityTmp.get("lat").getAsInt(),
+								cityTmp.get("lng").getAsInt());
 	}
 	
 	public static Artist extractArtist(JsonElement item){

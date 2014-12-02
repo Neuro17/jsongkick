@@ -105,23 +105,19 @@ public class EventSearch extends SongkickConnector {
 	}
 	
 	public URI queryByArtistId(String artistId) throws URISyntaxException{		
+		//TODO 	(CONTROLLARE) stampa correttamente 
+		// 		/artists/artists/123456789/calendar.json?apikey=iF1N0jYrhI5wtG3n
 		try {
-			
 			return uriBld	.setPath(SongkickConfig.getArtistPathForEvent())
-							.setCustomQuery(SongkickConfig.getArtistPathForEvent() + 
-											"/" + artistId +
-											"" +SongkickConfig.getArtistPathForEventCalendar()+
-											"?apikey=" + SongkickConfig.getApiKey())
+							.setPath(SongkickConfig.getArtistPathForEvent() + 
+									"/" + artistId +
+									SongkickConfig.getArtistPathForEventCalendar())
+							.setCustomQuery("apikey=" + SongkickConfig.getApiKey())
 							.build();
-
 		} catch (URISyntaxException e) {
 			log.error(e.getMessage());
 		}
 		return null;
-		//TODO 	invece di stampare /artists/{artist_id}/calendar.json?apikey={your_api_key}
-		//		stampa /artists?/artists/123456789/calendar.json?apikey=iF1N0jYrhI5wtG3n
-		
-		//		in alternativa possiamo usare Uri myUri = Uri.parse("http://www.google.com");
 	}
 	
 	public ArrayList<Concert> eventsListByArtistId(String artistId) throws URISyntaxException{
