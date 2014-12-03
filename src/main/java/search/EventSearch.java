@@ -149,7 +149,8 @@ public class EventSearch extends SongkickConnector {
 	}
 	
 	public JsonObject toJson(){
-		//TODO - trasformare l'oggetto Concert in JsonObject.
+		//TODO (DOMANDA) a cosa servirà in futuro convertire in json un concerto?
+		//guardare : http://stackoverflow.com/questions/19618174/how-to-convert-complex-java-object-into-json
 		return null;
 	}
 

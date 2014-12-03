@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import config.SongkickConfig;
@@ -37,8 +38,7 @@ public class LocationSearch extends SongkickConnector {
 		executeRequest(uri);
 	}
 	
-	public FullLocation firstLocation(String locationName) throws URISyntaxException{
-		//TODO doing ... 
+	public FullLocation firstLocation(String locationName) throws URISyntaxException{ 
 		FullLocation l;
 		JsonElement firstLocationAsJson = null;
 		JsonElement metroAreaAsJson = null;
@@ -53,60 +53,48 @@ public class LocationSearch extends SongkickConnector {
 		}
 		
 		firstLocationAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location").get(0);
+
 		metroAreaAsJson = firstLocationAsJson.getAsJsonObject().getAsJsonObject("metroArea");
 		cityAsJson = firstLocationAsJson.getAsJsonObject().getAsJsonObject("city");
-
+	
 		//	da: http://www.songkick.com/developer/location-search		
 		
-//		cityAsJson = firstLocationAsJson.getAsJsonObject().getAsJsonObject("city");
-//		metroAreaAsJson = firstLocationAsJson.getAsJsonObject().getAsJsonObject("metroArea");
-
 		l = new FullLocation(	Extractor.extractMetroArea(metroAreaAsJson),
 								Extractor.extractCity(cityAsJson));
-
-		log.trace("Successfully retrieved location");
-		
+	
+		log.trace("Successfully retrieved location");	
+	
 		return l;
 	}
 
 	public ArrayList<FullLocation> list(String locationName) throws URISyntaxException{
-		//TODO _ cambiare come in firstLocation
+		//TODO (CONTROLLARE) ricerca correttamente
 		log.trace("Retrieving location list");
 		JsonElement locationsAsJson = null;
 		JsonElement cityAsJson = null;
 		JsonElement metroAreaAsJson = null;
-		
 		FullLocation fullLocation = null;
 		ArrayList<FullLocation> locations = new ArrayList<FullLocation>();
 
 		search(locationName);
 		
 		if(!checkResponse()){
-			return locations;
+			locations = null;
 		}
-		
 //da : http://www.songkick.com/developer/location-search
-		locationsAsJson = getJsonResponse().getAsJsonObject("resultPage").getAsJsonObject("results").getAsJsonArray("location");
 
-		for(JsonElement location : locationsAsJson.getAsJsonArray() ){
+		locationsAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location");
+		
+		JsonArray locationsArray = locationsAsJson.getAsJsonArray();
+		
+		for(JsonElement location : locationsArray){
+		
 			metroAreaAsJson = location.getAsJsonObject().getAsJsonObject("metroArea");
 			cityAsJson = location.getAsJsonObject().getAsJsonObject("city");
 			
-			fullLocation = new FullLocation(new MetroArea(	
-					metroAreaAsJson.getAsJsonObject().getAsJsonObject("country").getAsJsonObject("displayName").getAsString(),
-					metroAreaAsJson.getAsJsonObject().getAsJsonObject("id").getAsString(),
-					metroAreaAsJson.getAsJsonObject().getAsJsonObject("displayName").getAsString()),
-											new City(
-					cityAsJson.getAsJsonObject().getAsJsonObject("displayName").getAsString(), 
-					cityAsJson.getAsJsonObject().getAsJsonObject("country").getAsJsonObject("displayName").getAsString(),
-					cityAsJson.getAsJsonObject().getAsJsonObject("lat").getAsInt(), 
-					cityAsJson.getAsJsonObject().getAsJsonObject("lng").getAsInt())
-					);
+			fullLocation = new FullLocation(Extractor.extractMetroArea(metroAreaAsJson),
+											Extractor.extractCity(cityAsJson));
 			locations.add(fullLocation);
-//			log.debug(gson.toJson(location.getAsJsonObject().getAsJsonObject("city").getAsCity()));
-//			log.debug(gson.toJson(location.getAsJsonObject().getAsJsonObject("metroArea").getAsMetroArea()));
-//			locations.add(new FullLocation(	location.getAsJsonObject().getAsJsonObject("city").getAsAsCity(), 
-//											location.getAsJsonObject().getAsJsonObject("metroArea").getAsAsCity()));
 		}
 		
 		log.trace("Succesfully retrieved locations");

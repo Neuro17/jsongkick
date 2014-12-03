@@ -78,9 +78,12 @@ public class ArtistSearch extends SongkickConnector {
 		artistsAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("artist");
 		
 		for(JsonElement artist : artistsAsJson.getAsJsonArray() ){
+			
 			log.debug(gson.toJson(artist.getAsJsonObject().get("displayName").getAsString()));
 			log.debug(gson.toJson(artist.getAsJsonObject().get("id").getAsString()));
-			artists.add(new Artist(artist.getAsJsonObject().get("displayName").getAsString(), artist.getAsJsonObject().get("id").getAsString()));
+			
+			artists.add(new Artist(	artist.getAsJsonObject().get("displayName").getAsString(), 
+									artist.getAsJsonObject().get("id").getAsString()));
 		}
 		
 		log.trace("Successfully retrieved artists");

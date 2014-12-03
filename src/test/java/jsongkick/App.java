@@ -28,9 +28,9 @@ public class App {
 //		FullLocation fl = ls.firstLocation("rome");
 //		log.trace("location found : " + fl.getMetroarea() + " - " + fl.getCity());		
 
-		ArtistSearch artistSearch = new ArtistSearch();
-		LocationSearch locationSearch = new LocationSearch();
-		EventSearch eventSearch = new EventSearch();
+//		ArtistSearch artistSearch = new ArtistSearch();
+//		LocationSearch locationSearch = new LocationSearch();
+//		EventSearch eventSearch = new EventSearch();
 
 		
 //		Artist art = artistSearch.firstArtist("Metallica");
@@ -40,14 +40,17 @@ public class App {
 //		
 //		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-		FullLocation fullLocation = locationSearch.firstLocation("new york");
+//		FullLocation fullLocation = locationSearch.firstLocation("new york");
+//		ArrayList<FullLocation> fullLocations = locationSearch.list("london");
+//		for(FullLocation fl : fullLocations)
+//			log.trace("location found : " + fl.getMetroarea() + " - " + fl.getCity());
 		
-		ArrayList<Concert> events = eventSearch.eventsListByLocationId(fullLocation.getMetroarea().getId());
+//		ArrayList<Concert> events = eventSearch.eventsListByLocationId(fullLocation.getMetroarea().getId());
 		
-		for(Concert event : events){
+//		for(Concert event : events){
 //			if(event.getPopularity() > 0.3)
-				log.debug(event.toString());
-		}
+//				log.debug(event.toString());
+//		}
 		
 //		log.debug(events.get(0));
 	}

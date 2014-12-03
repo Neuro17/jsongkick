@@ -15931,3 +15931,61 @@
 [2014-12-02T13:43:02,561 DEBUG] jsongkick.App - Concert [dateTime=2014-12-03T01:30:00.000+01:00, date=2014-12-02, performance=[SongkickArtist [name=Red Dragon Cartel, id=43504148], SongkickArtist [name=Ethan Brosh Band, id=44220383], SongkickArtist [name=Killcode, id=43401708], SongkickArtist [name=Black Water Rising, id=43353093]], venue=Venue [latitude=0.0, longitude=0.0, metroArea=MetroArea [country=US, id=7644, displayName=New York], id=1035371, displayName=Marlin Room at Webster Hall], id=21797788, popularity=9.17E-4, location=SimpleLocation [city=New York, NY, US, lat=40.7315474, lng=-73.9891966]]
 [2014-12-02T13:43:02,562 DEBUG] jsongkick.App - Concert [dateTime=2014-12-03T01:00:00.000+01:00, date=2014-12-02, performance=[SongkickArtist [name=Communion Nyc, id=44070763], SongkickArtist [name=Elijah & the Moon, id=44070768], SongkickArtist [name=Ski Lodge, id=44070773], SongkickArtist [name=The Stationary Set, id=44070778], SongkickArtist [name=Heaven's Jail, id=44070783], SongkickArtist [name=Donn T, id=44070788], SongkickArtist [name=Mirel Wagner, id=44070793], SongkickArtist [name=Fort Lean, id=44070798], SongkickArtist [name=Born Cages, id=44070803], SongkickArtist [name=Brett Harris, id=44070808], SongkickArtist [name=Michael Daves, id=44070813], SongkickArtist [name=BAy UNo, id=44139363]], venue=Venue [latitude=0.0, longitude=0.0, metroArea=MetroArea [country=US, id=7644, displayName=New York], id=2834263, displayName=Rockwood Music Hall Stages 1, 2 & 3], id=22202353, popularity=0.002612, location=SimpleLocation [city=New York, NY, US, lat=40.7223016, lng=-73.9885967]]
 [2014-12-02T13:43:02,562 DEBUG] jsongkick.App - Concert [dateTime=2014-12-03T02:00:00.000+01:00, date=2014-12-02, performance=[SongkickArtist [name=Meiko, id=43794813]], venue=Venue [latitude=0.0, longitude=0.0, metroArea=MetroArea [country=US, id=7644, displayName=New York], id=1171886, displayName=The Iridium], id=22043043, popularity=0.026125, location=SimpleLocation [city=New York, NY, US, lat=40.7617954, lng=-73.983269]]
+[2014-12-03T23:40:24,287 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:42:03,997 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:42:15,678 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:47:11,867 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:47:51,843 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:50:17,068 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:50:17,786 TRACE] search.LocationSearch - extracting from array
+[2014-12-03T23:54:00,049 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-03T23:56:54,625 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:00:40,569 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:02:46,483 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:02:47,042 TRACE] search.LocationSearch - Succesfully retrieved locations
+[2014-12-04T00:02:47,043 TRACE] jsongkick.App - location found : MetroArea [country=UK, id=24426, displayName=London] - City [name=London, country=UK, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,043 TRACE] jsongkick.App - location found : MetroArea [country=US, id=24580, displayName=Lexington] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,043 TRACE] jsongkick.App - location found : MetroArea [country=Canada, id=27374, displayName=London] - City [name=London, country=Canada, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,043 TRACE] jsongkick.App - location found : MetroArea [country=US, id=5274, displayName=Providence] - City [name=New London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,043 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85551, displayName=London] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,043 TRACE] jsongkick.App - location found : MetroArea [country=South Africa, id=32792, displayName=East London] - City [name=East London, country=South Africa, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=87671, displayName=New London] - City [name=New London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85546, displayName=London] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85541, displayName=London] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=87676, displayName=New London] - City [name=New London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=102176, displayName=New London] - City [name=New London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=102896, displayName=New London] - City [name=New London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:02:47,044 TRACE] jsongkick.App - location found : MetroArea [country=US, id=104098, displayName=London] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:03:20,014 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:11:00,549 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:12:04,016 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:14:28,408 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:14:28,969 TRACE] search.LocationSearch - Succesfully retrieved locations
+[2014-12-04T00:14:28,970 TRACE] jsongkick.App - location found : MetroArea [country=UK, id=24426, displayName=London] - City [name=London, country=UK, latitude=51.5078, longitude=-0.128, state=null]
+[2014-12-04T00:14:28,970 TRACE] jsongkick.App - location found : MetroArea [country=US, id=24580, displayName=Lexington] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:14:28,970 TRACE] jsongkick.App - location found : MetroArea [country=Canada, id=27374, displayName=London] - City [name=London, country=Canada, latitude=42.9833, longitude=-81.25, state=null]
+[2014-12-04T00:14:28,970 TRACE] jsongkick.App - location found : MetroArea [country=US, id=5274, displayName=Providence] - City [name=New London, country=US, latitude=41.3525, longitude=-72.1034, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85551, displayName=London] - City [name=London, country=US, latitude=40.14323, longitude=-74.726707, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=South Africa, id=32792, displayName=East London] - City [name=East London, country=South Africa, latitude=-33.0333, longitude=27.9167, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=US, id=87671, displayName=New London] - City [name=New London, country=US, latitude=43.413101, longitude=-71.982002, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85546, displayName=London] - City [name=London, country=US, latitude=45.262321, longitude=-69.012489, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85541, displayName=London] - City [name=London, country=US, latitude=41.517761, longitude=-72.75753, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=US, id=87676, displayName=New London] - City [name=New London, country=US, latitude=44.3978, longitude=-88.734398, state=null]
+[2014-12-04T00:14:28,971 TRACE] jsongkick.App - location found : MetroArea [country=US, id=102176, displayName=New London] - City [name=New London, country=US, latitude=35.44516, longitude=-80.219093, state=null]
+[2014-12-04T00:14:28,972 TRACE] jsongkick.App - location found : MetroArea [country=US, id=102896, displayName=New London] - City [name=New London, country=US, latitude=41.085861, longitude=-82.399559, state=null]
+[2014-12-04T00:14:28,972 TRACE] jsongkick.App - location found : MetroArea [country=US, id=104098, displayName=London] - City [name=London, country=US, latitude=63.036541, longitude=-149.105682, state=null]
+[2014-12-04T00:15:02,937 TRACE] search.LocationSearch - Retrieving location list
+[2014-12-04T00:15:04,550 TRACE] search.LocationSearch - Succesfully retrieved locations
+[2014-12-04T00:15:04,550 TRACE] jsongkick.App - location found : MetroArea [country=UK, id=24426, displayName=London] - City [name=London, country=UK, latitude=51.5078, longitude=-0.128, state=null]
+[2014-12-04T00:15:04,550 TRACE] jsongkick.App - location found : MetroArea [country=US, id=24580, displayName=Lexington] - City [name=London, country=US, latitude=0.0, longitude=0.0, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=Canada, id=27374, displayName=London] - City [name=London, country=Canada, latitude=42.9833, longitude=-81.25, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=US, id=5274, displayName=Providence] - City [name=New London, country=US, latitude=41.3525, longitude=-72.1034, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85551, displayName=London] - City [name=London, country=US, latitude=40.14323, longitude=-74.726707, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=South Africa, id=32792, displayName=East London] - City [name=East London, country=South Africa, latitude=-33.0333, longitude=27.9167, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=US, id=87671, displayName=New London] - City [name=New London, country=US, latitude=43.413101, longitude=-71.982002, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85546, displayName=London] - City [name=London, country=US, latitude=45.262321, longitude=-69.012489, state=null]
+[2014-12-04T00:15:04,551 TRACE] jsongkick.App - location found : MetroArea [country=US, id=85541, displayName=London] - City [name=London, country=US, latitude=41.517761, longitude=-72.75753, state=null]
+[2014-12-04T00:15:04,552 TRACE] jsongkick.App - location found : MetroArea [country=US, id=87676, displayName=New London] - City [name=New London, country=US, latitude=44.3978, longitude=-88.734398, state=null]
+[2014-12-04T00:15:04,552 TRACE] jsongkick.App - location found : MetroArea [country=US, id=102176, displayName=New London] - City [name=New London, country=US, latitude=35.44516, longitude=-80.219093, state=null]
+[2014-12-04T00:15:04,552 TRACE] jsongkick.App - location found : MetroArea [country=US, id=102896, displayName=New London] - City [name=New London, country=US, latitude=41.085861, longitude=-82.399559, state=null]
+[2014-12-04T00:15:04,552 TRACE] jsongkick.App - location found : MetroArea [country=US, id=104098, displayName=London] - City [name=London, country=US, latitude=63.036541, longitude=-149.105682, state=null]

@@ -82,7 +82,7 @@ public class Extractor {
 	}
 	
 	public static SimpleLocation extractLocation(JsonElement item){
-		//TODO - location ha attributi diversi a seconda dei casi
+		//TODO - (GIA' FATTO???)location ha attributi diversi a seconda dei casi
 		Double lat, lng;
 		SimpleLocation location;
 		JsonObject locTmp = item.getAsJsonObject();
@@ -134,13 +134,25 @@ public class Extractor {
 	}
 	
 	public static City extractCity(JsonElement item){
-		City city;
+		String name;
+		String country;
+		Double lat;
+		Double lng;
 		JsonObject cityTmp = item.getAsJsonObject();
+		City city = null;
 
-		return city = new City(	cityTmp.get("displayName").getAsString(),
-								cityTmp.getAsJsonObject("country").get("displayName").getAsString(),
-								cityTmp.get("lat").getAsInt(),
-								cityTmp.get("lng").getAsInt());
+		name = cityTmp.get("displayName").getAsString();
+		country = cityTmp.getAsJsonObject("country").get("displayName").getAsString();
+		
+		lat = cityTmp.get("lat").isJsonNull() ? null : cityTmp.get("lat").getAsDouble();
+		lng = cityTmp.get("lng").isJsonNull() ? null : cityTmp.get("lng").getAsDouble();
+		
+		if(lat == null && lng == null)
+			city = new City(name,country);
+		else 
+			city = new City(name,country,lat,lng);;
+
+		return city;
 	}
 	
 	public static Artist extractArtist(JsonElement item){
