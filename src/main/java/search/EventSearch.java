@@ -73,9 +73,7 @@ public class EventSearch extends SongkickConnector {
 		return null;
 	}
 	
-	public ArrayList<Concert> eventsListByLocationId(String locationId) throws URISyntaxException{
-		//TODO (CONTROLLARE)- aggiungere l'array di performance; ho modificato extractConcert
-		
+	public ArrayList<Concert> eventsListByLocationId(String locationId) throws URISyntaxException{		
 		log.trace("entering eventList by location id");
 		
 		buildURI();
@@ -105,28 +103,31 @@ public class EventSearch extends SongkickConnector {
 	}
 	
 	public URI queryByArtistId(String artistId) throws URISyntaxException{		
-		//TODO 	(CONTROLLARE) stampa correttamente 
-		// 		/artists/artists/123456789/calendar.json?apikey=iF1N0jYrhI5wtG3n
+		URI uri;
 		try {
-			return uriBld	.setPath(SongkickConfig.getArtistPathForEvent())
+			uri = uriBld	.setPath(SongkickConfig.getArtistPathForEvent())
 							.setPath(SongkickConfig.getArtistPathForEvent() + 
 									"/" + artistId +
 									SongkickConfig.getArtistPathForEventCalendar())
 							.setCustomQuery("apikey=" + SongkickConfig.getApiKey())
 							.build();
+			log.debug(uri);
+			return uri;
 		} catch (URISyntaxException e) {
 			log.error(e.getMessage());
 		}
+		
 		return null;
 	}
 	
-	public ArrayList<Concert> eventsListByArtistId(String artistId) throws URISyntaxException{
-		//TODO (CONTROLLARE)
+	public ArrayList<Concert> eventsListByArtist(Artist artist) throws URISyntaxException{
 		log.trace("entering eventLyst by artist id");
 		
 		buildURI();
 		
-		uri = queryByArtistId(artistId);
+		uri = queryByArtistId(artist.getId());
+		
+		log.debug("http://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}");
 		
 		log.debug("uri built: " + uri);
 		
@@ -136,13 +137,22 @@ public class EventSearch extends SongkickConnector {
 		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt()){
 			//capire se conviene gestire qui il fatto che ci possono essere più pagine nei risultati. è un problema comune a tutte le richieste
 		}
-		
-		JsonArray listTmp = events.getAsJsonObject("resultPage").getAsJsonObject("result").getAsJsonArray("event");
+		log.debug(events);
+		JsonArray listTmp = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
 		
 		for(JsonElement item : listTmp){
-			concerts.add(Extractor.extractConcert(item));
+			Concert concert = Extractor.extractConcert(item);
+			boolean found = false;
+			for(Artist art : concert.getPerformance())
+				if(art.getName().equals(artist.getName()));
+					found = true;
+			if(found)
+				concerts.add(concert);
+			else
+				log.error("Something wrong: artist not request by query");
 		}
 		
+		log.debug(concerts);
 		log.trace("exiting eventsListByArtistId");
 
 		return concerts;

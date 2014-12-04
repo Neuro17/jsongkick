@@ -68,12 +68,7 @@ public class Extractor {
 		
 //		log.debug(concertTmp.getAsJsonObject("venue").get("lat"));
 		if(!concertTmp.getAsJsonObject("venue").get("id").isJsonNull()){
-			venueTmp = new Venue(metroAreaTmp,
-				concertTmp.getAsJsonObject("venue").get("id").getAsString(),
-				concertTmp.getAsJsonObject("venue").get("displayName").getAsString());
-			
-//			event.setVenue(extractVenue(concertTmp.getAsJsonObject("venue")));
-			event.setVenue(venueTmp);
+			event.setVenue(extractVenue(concertTmp.getAsJsonObject("venue")));
 		}
 		
 //		log.debug(event.toString());
@@ -82,7 +77,6 @@ public class Extractor {
 	}
 	
 	public static SimpleLocation extractLocation(JsonElement item){
-		//TODO - (GIA' FATTO???)location ha attributi diversi a seconda dei casi
 		Double lat, lng;
 		SimpleLocation location;
 		JsonObject locTmp = item.getAsJsonObject();

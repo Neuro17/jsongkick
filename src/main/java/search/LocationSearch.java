@@ -68,7 +68,6 @@ public class LocationSearch extends SongkickConnector {
 	}
 
 	public ArrayList<FullLocation> list(String locationName) throws URISyntaxException{
-		//TODO (CONTROLLARE) ricerca correttamente
 		log.trace("Retrieving location list");
 		JsonElement locationsAsJson = null;
 		JsonElement cityAsJson = null;
@@ -81,7 +80,7 @@ public class LocationSearch extends SongkickConnector {
 		if(!checkResponse()){
 			locations = null;
 		}
-//da : http://www.songkick.com/developer/location-search
+		//da : http://www.songkick.com/developer/location-search
 
 		locationsAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location");
 		
