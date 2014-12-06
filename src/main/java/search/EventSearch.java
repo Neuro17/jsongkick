@@ -1,5 +1,7 @@
 package search;
 
+import http.SongkickConnector;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -7,10 +9,7 @@ import java.util.ArrayList;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -19,53 +18,45 @@ import com.google.gson.JsonObject;
 import config.SongkickConfig;
 import entity.Artist;
 import entity.Concert;
-import entity.FullLocation;
-import entity.MetroArea;
-import entity.Venue;
-import http.SongkickConnector;
 
 public class EventSearch extends SongkickConnector {
 	private static final Logger log = LogManager.getLogger(EventSearch.class);
 	
-	private JsonObject events;
-//	private Location location;
-	private MetroArea metroarea;
-	private Venue venue;
-	private Concert concert; 
-	private ArrayList<Concert> concerts;
-	private ArrayList<Artist> artists;
-	private Gson gson;
+	private String currentlocationId;
+	private Artist currentArtist;
 
 	public EventSearch() {
+		page = 1;
+		pages = 1;
+		currentArtist = null;
+		currentlocationId = null;
 		uriBld = new URIBuilder();
 		gson = new GsonBuilder().setPrettyPrinting().create();
-		events = new JsonObject();
-		concerts = new ArrayList<Concert>();
 	}
 	
-	public JsonObject getEvents() {
-		return events;
+	private Artist getCurrentArtist() {
+		return currentArtist;
 	}
 
-	public void setEvents(JsonObject events) {
-		this.events = events;
+	private void setCurrentArtist(Artist currentArtist) {
+		this.currentArtist = currentArtist;
+	}
+	
+	public String getLocationId() {
+		return currentlocationId;
+	}
+
+	private void setLocationId(String locationId) {
+		this.currentlocationId = locationId;
 	}
 
 	@Override
-	public URI query(String locationId) throws URISyntaxException {
-		log.trace("setting parameters to query");
-		
-		return uriBld	.setPath(SongkickConfig.getEventPath())
-						.setCustomQuery("location=sk:"+locationId+
-										"&apikey="+SongkickConfig.getApiKey())
-						.build();	
-	}
-	
-	public URI query(String locationId, int pageNumber){
+	protected URI query(String locationId){
 		log.trace("setting parameters to query");
 		
 		try {
-			return uriBld.setPath(SongkickConfig.getEventPath()).setCustomQuery("location=sk:"+locationId+"&apikey="+SongkickConfig.getApiKey()+"&page="+pageNumber).build();
+			return uriBld.setPath(SongkickConfig.getEventPath())
+						 .setCustomQuery("location=sk:"+locationId+"&apikey="+SongkickConfig.getApiKey()+"&page="+getPage()).build();
 		} catch (URISyntaxException e) {
 			log.error(e.getMessage());
 		}
@@ -73,43 +64,14 @@ public class EventSearch extends SongkickConnector {
 		return null;
 	}
 	
-	public ArrayList<Concert> eventsListByLocationId(String locationId) throws URISyntaxException{		
-		log.trace("entering eventList by location id");
-		
-		buildURI();
-		
-		uri = query(locationId, 1);
-		
-		log.debug("uri built: " + uri);
-		
-		executeRequest(uri);
-		 
-		events = getJsonResponse();
-		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt()){
-			//capire se conviene gestire qui il fatto che ci possono essere più pagine nei risultati. è un problema comune a tutte le richieste
-		}
-//		log.debug(gson.toJson(events.toString()));: 
-		JsonArray listTmp = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
-		
-		for(JsonElement item : listTmp){
-			concerts.add(Extractor.extractConcert(item));	
-		}
-	
-//		log.debug(listTmp.get(0).toString());
-//		concerts = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
-		
-		log.trace("exiting eventsListByLocationId");
-		return concerts;
-	}
-	
-	public URI queryByArtistId(String artistId) throws URISyntaxException{		
+	private URI queryByArtistId(String artistId) throws URISyntaxException{		
 		URI uri;
 		try {
 			uri = uriBld	.setPath(SongkickConfig.getArtistPathForEvent())
 							.setPath(SongkickConfig.getArtistPathForEvent() + 
 									"/" + artistId +
 									SongkickConfig.getArtistPathForEventCalendar())
-							.setCustomQuery("apikey=" + SongkickConfig.getApiKey())
+							.setCustomQuery("apikey=" + SongkickConfig.getApiKey() + "&page=" + getPage())
 							.build();
 			log.debug(uri);
 			return uri;
@@ -120,12 +82,61 @@ public class EventSearch extends SongkickConnector {
 		return null;
 	}
 	
-	public ArrayList<Concert> eventsListByArtist(Artist artist) throws URISyntaxException{
-		log.trace("entering eventLyst by artist id");
+	public ArrayList<Concert> eventsListByLocationId(String locationId) throws URISyntaxException{	
+		log.trace("entering eventList by location id");
+		ArrayList<Concert> concerts = new ArrayList<Concert>();
+		JsonObject events = new JsonObject();
 		
 		buildURI();
 		
-		uri = queryByArtistId(artist.getId());
+		if(getLocationId() == null || !getLocationId().equals(locationId)){
+			setLocationId(locationId);
+			setPage(1);
+		}
+		
+		uri = query(getLocationId());
+		
+		log.debug("uri built: " + uri);
+		
+		executeRequest(uri);
+		 
+		events = getJsonResponse();
+		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt())
+			setPages(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() / events.getAsJsonObject("resultsPage").get("perPage").getAsInt());
+		else
+			setPages(1);
+		
+//		log.debug(gson.toJson(events.toString()));:
+		JsonArray listTmp = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
+		
+		for(JsonElement item : listTmp){
+			concerts.add(Extractor.extractConcert(item));	
+		}
+	
+//		log.debug(listTmp.get(0).toString());
+//		concerts = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
+		
+		clearQuery();
+		
+		log.trace("exiting eventsListByLocationId");
+		
+		return concerts;
+	}
+	
+	public ArrayList<Concert> eventsListByArtist(Artist artist) throws URISyntaxException{
+		log.trace("entering eventLyst by artist id");
+		
+		ArrayList<Concert> concerts = new ArrayList<Concert>();
+		JsonObject events = new JsonObject();
+		
+		if(getCurrentArtist() == null || !getCurrentArtist().getId().equals(artist.getId())){
+			setCurrentArtist(artist);
+			setPage(1);
+		}
+		
+		buildURI();
+		
+		uri = queryByArtistId(currentArtist.getId());
 		
 		log.debug("http://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}");
 		
@@ -134,28 +145,41 @@ public class EventSearch extends SongkickConnector {
 		executeRequest(uri);
 
 		events = getJsonResponse();
-		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt()){
-			//capire se conviene gestire qui il fatto che ci possono essere più pagine nei risultati. è un problema comune a tutte le richieste
-		}
-		log.debug(events);
-		JsonArray listTmp = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
 		
+		log.debug(events.getAsJsonObject("resultsPage").get("page").getAsString());
+		if(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > events.getAsJsonObject("resultsPage").get("perPage").getAsInt())
+			setPages(events.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() / events.getAsJsonObject("resultsPage").get("perPage").getAsInt());
+		else
+			setPages(1);
+		
+//		log.debug(events);
+		JsonArray listTmp = events.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("event");
+//		log.debug(gson.toJson(listTmp));
 		for(JsonElement item : listTmp){
 			Concert concert = Extractor.extractConcert(item);
-			boolean found = false;
-			for(Artist art : concert.getPerformance())
-				if(art.getName().equals(artist.getName()));
-					found = true;
-			if(found)
-				concerts.add(concert);
-			else
-				log.error("Something wrong: artist not request by query");
+			concerts.add(concert);
 		}
 		
-		log.debug(concerts);
+//		log.debug(concerts);
+		
+		clearQuery();
 		log.trace("exiting eventsListByArtistId");
-
+	
 		return concerts;
+	}
+
+	public ArrayList<Concert> nextPage(Object obj) throws URISyntaxException{
+		
+		if(hasNextPage()){
+			setPage(getPage()+1);
+			if(obj instanceof Artist)
+				return eventsListByArtist(getCurrentArtist());
+			else if (obj instanceof String)
+				return eventsListByLocationId(getLocationId());
+		}
+		else
+			log.debug("no more records");
+		return null;
 	}
 	
 	public JsonObject toJson(){

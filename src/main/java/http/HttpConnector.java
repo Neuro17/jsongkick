@@ -13,19 +13,19 @@ public interface HttpConnector {
 
 //	public void closeConnection();
 	
-	public JsonObject parseResponseAsJson(InputStream response) throws IllegalStateException, IOException;
+	abstract JsonObject parseResponseAsJson(InputStream response) throws IllegalStateException, IOException;
 	
-	public boolean isEmptyResponse();
+	abstract boolean isEmptyResponse();
 	
-	public JsonObject executeRequest(URI uri);
+	abstract JsonObject executeRequest(URI uri);
 	
-	public void buildURI() throws URISyntaxException;
+	abstract void buildURI() throws URISyntaxException;
 	
 //	public URI query(String param) throws URISyntaxException;
 	
-	public boolean checkResponse();
+	abstract boolean checkResponse();
 	
-	public boolean isNullResponse();
+	abstract boolean isNullResponse();
 
 }
 

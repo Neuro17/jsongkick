@@ -14,23 +14,24 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import config.SongkickConfig;
-import entity.City;
 import entity.FullLocation;
-import entity.MetroArea;
-import entity.SimpleLocation;
-import search.Extractor;
 
 public class LocationSearch extends SongkickConnector {
 	private static final Logger log = LogManager.getLogger(LocationSearch.class);
-	
+	private String currentLocation;
+
 	public LocationSearch() {
+		page = 1;
+		pages = 1;
+		currentLocation = null;
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		uriBld = new URIBuilder();
 	}
 	
-	public void search(String locationName) throws URISyntaxException{
+	private void search(String locationName) throws URISyntaxException{
 		buildURI();
 		
 		uri = query(locationName);
@@ -40,6 +41,7 @@ public class LocationSearch extends SongkickConnector {
 	
 	public FullLocation firstLocation(String locationName) throws URISyntaxException{ 
 		FullLocation l;
+		JsonObject response = null;
 		JsonElement firstLocationAsJson = null;
 		JsonElement metroAreaAsJson = null;
 		JsonElement cityAsJson = null;
@@ -52,7 +54,8 @@ public class LocationSearch extends SongkickConnector {
 			l = null;
 		}
 		
-		firstLocationAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location").get(0);
+		response = getJsonResponse();
+		firstLocationAsJson = response.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location").get(0);
 
 		metroAreaAsJson = firstLocationAsJson.getAsJsonObject().getAsJsonObject("metroArea");
 		cityAsJson = firstLocationAsJson.getAsJsonObject().getAsJsonObject("city");
@@ -61,7 +64,7 @@ public class LocationSearch extends SongkickConnector {
 		
 		l = new FullLocation(	Extractor.extractMetroArea(metroAreaAsJson),
 								Extractor.extractCity(cityAsJson));
-	
+		clearQuery();
 		log.trace("Successfully retrieved location");	
 	
 		return l;
@@ -69,11 +72,17 @@ public class LocationSearch extends SongkickConnector {
 
 	public ArrayList<FullLocation> list(String locationName) throws URISyntaxException{
 		log.trace("Retrieving location list");
+		JsonObject response = null;
 		JsonElement locationsAsJson = null;
 		JsonElement cityAsJson = null;
 		JsonElement metroAreaAsJson = null;
 		FullLocation fullLocation = null;
 		ArrayList<FullLocation> locations = new ArrayList<FullLocation>();
+		
+		if(currentLocation == null || !currentLocation.equals(locationName)){
+			currentLocation = locationName;
+			setPage(1);
+		}
 
 		search(locationName);
 		
@@ -82,7 +91,13 @@ public class LocationSearch extends SongkickConnector {
 		}
 		//da : http://www.songkick.com/developer/location-search
 
-		locationsAsJson = getJsonResponse().getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location");
+		response = getJsonResponse();
+		locationsAsJson = response.getAsJsonObject("resultsPage").getAsJsonObject("results").getAsJsonArray("location");
+		
+		if(response.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() > response.getAsJsonObject("resultsPage").get("perPage").getAsInt())
+			setPages(response.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() / response.getAsJsonObject("resultsPage").get("perPage").getAsInt());
+		else
+			setPages(1);
 		
 		JsonArray locationsArray = locationsAsJson.getAsJsonArray();
 		
@@ -96,17 +111,39 @@ public class LocationSearch extends SongkickConnector {
 			locations.add(fullLocation);
 		}
 		
+		clearQuery();
+		
 		log.trace("Succesfully retrieved locations");
 
 		return locations;
 	}
 	
 	@Override
-	public URI query(String locationName) throws URISyntaxException{
-		return uriBld	.setPath(SongkickConfig.getLocationPath())
+	protected URI query(String locationName){
+		URI uri = null;
+		
+		try {
+			uri = uriBld.setPath(SongkickConfig.getLocationPath())
 						.setParameter("query", locationName)
 						.setParameter("apikey", SongkickConfig.getApiKey())
+						.setParameter("page", getPage().toString())
 						.build();
+		} catch (URISyntaxException e) {
+			log.error(e.getCause());
+			log.error(e.getMessage());
+		}
+		return uri;
+	}
+	
+	public ArrayList<FullLocation> nextPage() throws URISyntaxException{
+		if(hasNextPage()){
+			setPage(getPage()+1);
+			return list(currentLocation);
+		}
+		else
+			log.debug("no more records");
+		return null;
+		
 	}
 
 }

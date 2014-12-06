@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.GenericArrayType;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.utils.URIBuilder;
@@ -21,12 +23,43 @@ import com.google.gson.JsonParser;
 
 import config.SongkickConfig;
 
-public abstract class SongkickConnector implements HttpConnector{
+public abstract class SongkickConnector{
 	private static final Logger log = LogManager.getLogger(SongkickConnector.class);
 	private JsonObject jsonResponse;
 	protected Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	protected URIBuilder uriBld;
 	protected URI uri;
+	protected Integer page;
+	protected int pages;
+	
+	protected Integer getPage() {
+		return page;
+	}
+
+	protected void setPage(int page) {
+		this.page = page;
+	}
+	
+	public boolean hasNextPage() {
+		return page < pages;
+	}
+
+	protected int getPages() {
+		return pages;
+	}
+
+	protected void setPages(int pages) {
+		this.pages = pages;
+	}
+	
+	protected URI getUri() {
+		return uri;
+	}
+
+	protected void setUri(URI uri) {
+		this.uri = uri;
+	}
+
 	protected URL url;
 	
 
@@ -38,7 +71,7 @@ public abstract class SongkickConnector implements HttpConnector{
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public JsonObject parseResponseAsJson(InputStream response){
+	protected JsonObject parseResponseAsJson(InputStream response){
 		log.trace("Entering parseResponseAsJson");
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response));
 		
@@ -65,7 +98,7 @@ public abstract class SongkickConnector implements HttpConnector{
 	 * @param uri
 	 * @return JsonObject
 	 */
-	public JsonObject executeRequest(URI uri){
+	protected JsonObject executeRequest(URI uri){
 		//TODO - capire come accedere ai risultati che sono oltre la prima pagina. 
 		InputStream response;
 		
@@ -100,19 +133,19 @@ public abstract class SongkickConnector implements HttpConnector{
 		return jsonResponse;
 	}
 	
-	public boolean isNullResponse(){
+	protected boolean isNullResponse(){
 		return jsonResponse == null;
 	}
 	
-	public boolean isEmptyResponse(){
+	protected boolean isEmptyResponse(){
 		return jsonResponse.getAsJsonObject("resultsPage").get("totalEntries").getAsInt() == 0;
 	}
 
-	public JsonObject getJsonResponse() {
+	protected JsonObject getJsonResponse() {
 		return jsonResponse;
 	}
 	
-	public boolean checkResponse(){
+	protected boolean checkResponse(){
 		if(isNullResponse()){
 			log.error("Timeout scaduto");
 			return false;
@@ -126,7 +159,7 @@ public abstract class SongkickConnector implements HttpConnector{
 		return true;
 	}
 	
-	public void buildURI(){
+	protected void buildURI(){
 		log.trace("Building URI");
 		
 		uriBld.setScheme(SongkickConfig.getScheme()).setHost(SongkickConfig.getHost());		
@@ -134,5 +167,16 @@ public abstract class SongkickConnector implements HttpConnector{
 		log.trace("Succesfully build:"); 
 	}
 	
-	public abstract URI query(String param) throws URISyntaxException;
+	
+	protected void clearQuery(){
+		if(!hasNextPage()){
+			setPage(1);
+			log.debug("no other pages");
+		}
+	}
+	
+	protected abstract URI query(String param) throws URISyntaxException;
+	
+	//TODO - come faccio a creare un metodo astratto che può tornare una lista ma non conosco a priori il tipo di dato che contiene
+//	public abstract GenericArrayType nextPage(Object obj) throws URISyntaxException;
 }
